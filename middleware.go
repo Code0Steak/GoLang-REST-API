@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -24,9 +25,23 @@ var recipes []Recipes
 /* Funcs. for the "GET" method */
 func getRecipes(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(recipes)
+
 }
 
 func getRecipe(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+
+	for _, recipe := range recipes {
+		if recipe.ID == params["id"] {
+			json.NewEncoder(w).Encode(recipe)
+		}
+	}
+
+	json.NewEncoder(w).Encode(&Recipes{})
 
 }
 
@@ -51,6 +66,8 @@ func main() {
 	r := mux.NewRouter()
 
 	//Fake DB
+
+	//Entry #1
 	ingr := map[string]string{
 		"🥚":     "four",
 		"🍅":     "three and a 1/2",
@@ -73,6 +90,27 @@ func main() {
 		Procedure:   procedure,
 		Cook:        "Binging wt. Babish",
 		Rating:      4.8,
+		recipeType:  "Indian",
+	})
+
+	//#2
+	ingr2 := map[string]string{
+		"Maggie Noodle Packet": "As many",
+	}
+
+	procedure2 := map[int]string{
+		1: "Follow the instructions on the Maggie Packet 😄",
+		2: "Serve Hot and with topping of some veggies(and 🧀)",
+	}
+
+	recipes = append(recipes, Recipes{
+
+		ID:          "2",
+		Name:        "Maggie Noodle",
+		Ingredients: ingr2,
+		Procedure:   procedure2,
+		Cook:        "You",
+		Rating:      5.0,
 		recipeType:  "Indian",
 	})
 
