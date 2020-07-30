@@ -13,9 +13,9 @@ type Recipes struct {
 	ID          string            `json:"id"`
 	Name        string            `json:"name"`
 	Ingredients map[string]string `json:"ingredients"`
-	Procedure   map[string]string `json:"procedure"`
+	Procedure   map[int]string    `json:"procedure"`
 	Cook        string            `json:"recipe_by"`
-	Rating      string            `json:"rating"`
+	Rating      float32           `json:"rating"`
 	recipeType  string            `json:"cuisine"`
 }
 
@@ -49,6 +49,32 @@ func main() {
 
 	//Initialize Router
 	r := mux.NewRouter()
+
+	//Fake DB
+	ingr := map[string]string{
+		"🥚":     "four",
+		"🍅":     "three and a 1/2",
+		"🧅":     "two big",
+		"clove": "two",
+		"🧀":     "optional",
+	}
+	procedure := map[int]string{
+		1: "2 cloves pressed over a knife. Diced onion in a pan containing heated oil",
+		2: "Turmeric and 🌶 to it",
+		3: "Crushed 🍅's and pepper in. For 20 mins, steam",
+		4: "Make wells to embed 🥚. Cook for 5",
+		5: "Serve Hot ♨!",
+	}
+	recipes = append(recipes, Recipes{
+
+		ID:          "1",
+		Name:        "Shakshuka",
+		Ingredients: ingr,
+		Procedure:   procedure,
+		Cook:        "Binging wt. Babish",
+		Rating:      4.8,
+		recipeType:  "Indian",
+	})
 
 	//Route Handlers
 	r.HandleFunc("/api/recipes", getRecipes).Methods("GET")
